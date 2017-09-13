@@ -1,0 +1,6 @@
+name: IDT Labs
+description: An experimental module base on idtlabs test story
+package: Custom
+type: module
+version: 1.0
+core: 8.x

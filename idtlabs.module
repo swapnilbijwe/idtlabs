@@ -1,0 +1,25 @@
+<?php 
+
+function idtlabs_preprocess_page(&$variables){
+	$config = \Drupal::config('service.adminsettings');
+
+	/*get variable values*/
+
+	$message 			= $config->get('welcome_message');  
+	$config_path 	 	= $config->get('message_path');
+	$config_roles 		= $config->get('user_roles');
+	$config_message_type = $config->get('display_message_type');
+
+	/*get current user info*/
+	$current_user = \Drupal::currentUser();
+	$current_roles = $current_user->getRoles();
+	
+
+
+	$current_path = \Drupal::service('path.current')->getPath();
+	$check_role_exist = array_intersect($current_roles, array_values($config_roles));
+    
+	if ($current_path  == $config_path && $check_role_exist) {
+   		drupal_set_message(t($message), $config_message_type, FALSE);
+    }
+}

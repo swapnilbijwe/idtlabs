@@ -1,0 +1,6 @@
+system.admin_settings_form:
+  title: 'IDT Labs'
+  route_name: idtlabs.admin_settings_form  
+  description: 'IDT Labs message configuration'  
+  parent: system.admin
+  weight: 99
