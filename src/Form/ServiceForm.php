@@ -80,16 +80,17 @@ class ServiceForm extends ConfigFormBase {
    */
   	public function validateForm(array &$form, FormStateInterface $form_state) {
   		/*check path is exit in route table*/
-
-  		$route = \Drupal::service('path.validator')->isValid($form_state->getValue('message_path'));
-		
-		if (!$route) {
-	      	$form_state->setErrorByName('message_path', $this->t('Path is invalid. Please enter valid path.'));
-	    }
+    	$alias = rtrim(trim($form_state->getValue('message_path')), " \\/");
+    
+	      // Validate that the submitted alias does not exist yet.
+  		$is_exists = \Drupal::service('path.validator')->isValid($alias);
 	    
-	    if(substr($route , -1)=='/'){
-    	  $form_state->setErrorByName('message_path', $this->t('Path cannot end with trailing slash. Please enter valid path.'));
-	   	}
+	    if (!$is_exists) {
+	        $form_state->setErrorByName('message_path', $this->t('Path not found. Please enter valid path.'));
+	    }
+        if ($alias && $alias[0] !== '/') {
+      		$form_state->setErrorByName('message_path', $this->t('The alias needs to start with a slash.'));
+    	}
 	  }
 
 		/**  
@@ -99,6 +100,7 @@ class ServiceForm extends ConfigFormBase {
 		parent::submitForm($form, $form_state);  
 		
 		$message_path_alias = \Drupal::service('path.alias_manager')->getAliasByPath($form_state->getValue('message_path'));
+		$message_path_alias = rtrim(trim($message_path_alias), " \\/");
 
 		$this->config('service.adminsettings')  
 		  ->set('welcome_message', $form_state->getValue('welcome_message'))  

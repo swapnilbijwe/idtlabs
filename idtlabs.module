@@ -14,10 +14,11 @@ function idtlabs_preprocess_page(&$variables){
 	$current_user = \Drupal::currentUser();
 	$current_roles = $current_user->getRoles();
 	
-	$current_path = \Drupal::service('path.current')->getPath();
-	$path_alias = \Drupal::service('path.alias_manager')->getAliasByPath($current_path);
-	
 	$check_role_exist = array_intersect($current_roles, array_values($config_roles));
+	
+	
+	$current_path = \Drupal::service('path.current')->getPath(); //get current path
+	$path_alias = \Drupal::service('path.alias_manager')->getAliasByPath($current_path); // get current path alias
 	
 	if ($path_alias  == $config_path  && isset( $check_role_exist )) {
     	drupal_set_message(t($message), $config_message_type, FALSE);
