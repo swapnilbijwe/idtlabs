@@ -43,7 +43,7 @@ class ServiceForm extends ConfigFormBase {
 	    $form['message_path'] = [  
 			'#type' => 'textfield',  
 			'#title' => $this->t('Welcome message display path'),  
-			'#description' => $this->t('Welcome message display to specific path'),  
+			'#description' => $this->t('Welcome message display to specific path. Please add url start with slash'),  
 			'#default_value' => $config->get('message_path'), 
 			'#required' => TRUE,
 			'#maxlength' => 150,
@@ -97,10 +97,12 @@ class ServiceForm extends ConfigFormBase {
 		*/ 
 	public function submitForm(array &$form, FormStateInterface $form_state) {  
 		parent::submitForm($form, $form_state);  
+		
+		$message_path_alias = \Drupal::service('path.alias_manager')->getAliasByPath($form_state->getValue('message_path'));
 
 		$this->config('service.adminsettings')  
 		  ->set('welcome_message', $form_state->getValue('welcome_message'))  
-  		  ->set('message_path', $form_state->getValue('message_path'))  
+  		  ->set('message_path', $message_path_alias)  
   		  ->set('user_roles', $form_state->getValue('user_roles'))  
   		  ->set('display_message_type', $form_state->getValue('display_message_type'))  
 		->save();  
